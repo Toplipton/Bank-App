@@ -15,7 +15,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Fetch user + transactions separately (CORRECT WAY)
   const fetchDashboardData = async () => {
     try {
       const userRes = await api.get("/user/dashboard");
@@ -34,9 +33,7 @@ const Dashboard = () => {
     setSuccessMessage(message);
     fetchDashboardData();
 
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 2000);
+    setTimeout(() => setSuccessMessage(""), 2000);
   };
 
   useEffect(() => {
@@ -60,32 +57,39 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
+    <div className="min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className="md:flex">
+        <Sidebar />
 
-      <main className="flex-1 p-8 space-y-8">
-        {successMessage && (
-          <div className="bg-green-100 text-green-700 px-4 py-3 rounded">
-            {successMessage}
-          </div>
-        )}
+        {/* Main Content */}
+        <main className="flex-1 px-4 py-6 md:p-8 space-y-6">
+          {successMessage && (
+            <div className="bg-green-100 text-green-700 px-4 py-3 rounded">
+              {successMessage}
+            </div>
+          )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ProfileCard user={user} />
+          {/* Top Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <ProfileCard user={user} />
 
-          <div className="lg:col-span-2 space-y-6">
-            <BalanceCard balance={user.balance} />
+            <div className="lg:col-span-2 space-y-6">
+              <BalanceCard balance={user.balance} />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <DepositCard onSuccess={handleSuccess} />
-              <WithdrawCard onSuccess={handleSuccess} />
-              <TransferCard onSuccess={handleSuccess} />
+              {/* Action Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <DepositCard onSuccess={handleSuccess} />
+                <WithdrawCard onSuccess={handleSuccess} />
+                <TransferCard onSuccess={handleSuccess} />
+              </div>
             </div>
           </div>
-        </div>
 
-        <TransactionsPreview transactions={transactions} />
-      </main>
+          {/* Transactions */}
+          <TransactionsPreview transactions={transactions} />
+        </main>
+      </div>
     </div>
   );
 };
