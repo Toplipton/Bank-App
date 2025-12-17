@@ -88,12 +88,12 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* ✅ MOBILE ATM / BALANCE CARD */}
+        {/*  MOBILE ATM / BALANCE CARD */}
         <div className="md:hidden">
           <BalanceCard balance={user.balance} />
         </div>
 
-        {/* ✅ MOBILE PROFILE CARD */}
+        {/*  MOBILE PROFILE CARD */}
         <div className="md:hidden">
           <ProfileCard user={user} />
         </div>
