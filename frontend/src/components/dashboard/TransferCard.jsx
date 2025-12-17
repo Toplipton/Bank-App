@@ -8,32 +8,30 @@ const TransferCard = ({ onSuccess }) => {
   const [error, setError] = useState("");
 
   const handleTransfer = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    if (!amount || amount <= 0 || !toAccount) {
-      return setError("All fields are required");
-    }
+  if (!amount || amount <= 0 || !toAccount) {
+    return setError("All fields are required");
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      await api.post("/transactions/transfer", {
-        amount: Number(amount),
-        toAccount: toAccount.trim(),
-      });
+    await api.post("/transactions/transfer", {
+      amount: Number(amount),
+      toAccountNumber: toAccount.trim(),
+    });
 
-      setAmount("");
-      setToAccount("");
-      onSuccess("Transfer successful");
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Transfer failed"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setAmount("");
+    setToAccount("");
+    onSuccess("Transfer successful");
+  } catch (err) {
+    setError(err.response?.data?.message || "Transfer failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
