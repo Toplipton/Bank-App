@@ -30,11 +30,21 @@ const Dashboard = () => {
   };
 
   const handleSuccess = (message) => {
-    setSuccessMessage(message);
-    fetchDashboardData();
+  setSuccessMessage(message);
 
-    setTimeout(() => setSuccessMessage(""), 2000);
-  };
+  // 🔥 NEW: Scroll to top so user sees feedback
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+
+  fetchDashboardData();
+
+  setTimeout(() => {
+    setSuccessMessage("");
+  }, 2500);
+};
+
 
   useEffect(() => {
     fetchDashboardData();
@@ -64,31 +74,45 @@ const Dashboard = () => {
 
         {/* Main Content */}
         <main className="flex-1 px-4 py-6 md:p-8 space-y-6">
-          {successMessage && (
-            <div className="bg-green-100 text-green-700 px-4 py-3 rounded">
-              {successMessage}
-            </div>
-          )}
 
-          {/* Top Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <ProfileCard user={user} />
+  {/* ✅ MOBILE HEADER — ADD THIS HERE */}
+  <div className="md:hidden bg-white rounded-xl shadow p-4">
+    <h2 className="text-lg font-bold text-emerald-700">
+      Toplipton Bank
+    </h2>
+    <p className="text-sm text-gray-600">
+      Welcome, {user.fullName}
+    </p>
+    <p className="mt-2 text-xl font-semibold">
+      ₦{user.balance.toLocaleString()}
+    </p>
+  </div>
 
-            <div className="lg:col-span-2 space-y-6">
-              <BalanceCard balance={user.balance} />
+  {/* Existing success message */}
+  {successMessage && (
+    <div className="bg-green-100 text-green-700 px-4 py-3 rounded">
+      {successMessage}
+    </div>
+  )}
 
-              {/* Action Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <DepositCard onSuccess={handleSuccess} />
-                <WithdrawCard onSuccess={handleSuccess} />
-                <TransferCard onSuccess={handleSuccess} />
-              </div>
-            </div>
-          </div>
+  {/* Existing dashboard content */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <ProfileCard user={user} />
 
-          {/* Transactions */}
-          <TransactionsPreview transactions={transactions} />
-        </main>
+    <div className="lg:col-span-2 space-y-6">
+      <BalanceCard balance={user.balance} />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <DepositCard onSuccess={handleSuccess} />
+        <WithdrawCard onSuccess={handleSuccess} />
+        <TransferCard onSuccess={handleSuccess} />
+      </div>
+    </div>
+  </div>
+
+  <TransactionsPreview transactions={transactions} />
+</main>
+
       </div>
     </div>
   );
