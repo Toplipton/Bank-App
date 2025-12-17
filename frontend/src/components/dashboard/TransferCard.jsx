@@ -2,42 +2,40 @@ import { useState } from "react";
 import api from "../../api/axios";
 
 const TransferCard = ({ onSuccess }) => {
-  const [amount, setAmount] = useState("");
   const [toAccount, setToAccount] = useState("");
+  const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleTransfer = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
 
-  if (!amount || amount <= 0 || !toAccount) {
-    return setError("All fields are required");
-  }
+    if (!toAccount || !amount || Number(amount) <= 0) {
+      return setError("All fields are required");
+    }
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    await api.post("/transactions/transfer", {
-      amount: Number(amount),
-      toAccountNumber: toAccount.trim(),
-    });
+      await api.post("/transactions/transfer", {
+        toAccountNumber: toAccount.trim(),
+        amount: Number(amount),
+      });
 
-    setAmount("");
-    setToAccount("");
-    onSuccess("Transfer successful");
-  } catch (err) {
-    setError(err.response?.data?.message || "Transfer failed");
-  } finally {
-    setLoading(false);
-  }
-};
+      setToAccount("");
+      setAmount("");
+      onSuccess("Transfer successful");
+    } catch (err) {
+      setError(err.response?.data?.message || "Transfer failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
-      <h3 className="text-lg font-semibold mb-4">
-        Transfer Funds
-      </h3>
+      <h3 className="text-lg font-semibold mb-4">Transfer Funds</h3>
 
       {error && (
         <p className="text-red-500 text-sm mb-2">
@@ -47,7 +45,7 @@ const TransferCard = ({ onSuccess }) => {
 
       <form onSubmit={handleTransfer} className="space-y-4">
 
-        {/* Recipient Account */}
+        {/* Recipient Account Number */}
         <input
           type="number"
           inputMode="numeric"
