@@ -30,21 +30,17 @@ const Dashboard = () => {
   };
 
   const handleSuccess = (message) => {
-  setSuccessMessage(message);
+    setSuccessMessage(message);
 
-  // 🔥 NEW: Scroll to top so user sees feedback
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
+    // 🔥 Always bring feedback into view (mobile & desktop)
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-  fetchDashboardData();
+    fetchDashboardData();
 
-  setTimeout(() => {
-    setSuccessMessage("");
-  }, 2500);
-};
-
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 2500);
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -67,53 +63,69 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="md:flex">
-        <Sidebar />
+    <div className="min-h-screen bg-gray-100 md:flex">
+      <Sidebar />
 
-        {/* Main Content */}
-        <main className="flex-1 px-4 py-6 md:p-8 space-y-6">
+      <main className="flex-1 px-4 py-6 md:p-8 space-y-6 relative">
 
-  {/* ✅ MOBILE HEADER — ADD THIS HERE */}
-  <div className="md:hidden bg-white rounded-xl shadow p-4">
-    <h2 className="text-lg font-bold text-emerald-700">
-      Toplipton Bank
-    </h2>
-    <p className="text-sm text-gray-600">
-      Welcome, {user.fullName}
-    </p>
-    <p className="mt-2 text-xl font-semibold">
-      ₦{user.balance.toLocaleString()}
-    </p>
-  </div>
+        {/* STICKY SUCCESS MESSAGE (Mobile-safe) */}
+        {successMessage && (
+          <div className="fixed md:static top-4 left-1/2 -translate-x-1/2 md:translate-x-0 z-50 bg-green-100 text-green-700 px-4 py-3 rounded shadow">
+            {successMessage}
+          </div>
+        )}
 
-  {/* Existing success message */}
-  {successMessage && (
-    <div className="bg-green-100 text-green-700 px-4 py-3 rounded">
-      {successMessage}
-    </div>
-  )}
+        {/*  MOBILE HEADER (VISIBLE IMMEDIATELY) */}
+        <div className="md:hidden bg-white rounded-xl shadow p-4 space-y-1">
+          <h2 className="text-lg font-bold text-emerald-700">
+            Toplipton Bank
+          </h2>
+          <p className="text-sm text-gray-600">
+            Welcome, {user.fullName}
+          </p>
+          <p className="text-xl font-semibold">
+            ₦{user.balance.toLocaleString()}
+          </p>
+        </div>
 
-  {/* Existing dashboard content */}
-  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <ProfileCard user={user} />
+        {/* ✅ MOBILE ATM / BALANCE CARD */}
+        <div className="md:hidden">
+          <BalanceCard balance={user.balance} />
+        </div>
 
-    <div className="lg:col-span-2 space-y-6">
-      <BalanceCard balance={user.balance} />
+        {/* ✅ MOBILE PROFILE CARD */}
+        <div className="md:hidden">
+          <ProfileCard user={user} />
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DepositCard onSuccess={handleSuccess} />
-        <WithdrawCard onSuccess={handleSuccess} />
-        <TransferCard onSuccess={handleSuccess} />
-      </div>
-    </div>
-  </div>
+        {/* ================= DESKTOP LAYOUT ================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-  <TransactionsPreview transactions={transactions} />
-</main>
+          {/* Desktop Profile */}
+          <div className="hidden md:block">
+            <ProfileCard user={user} />
+          </div>
 
-      </div>
+          {/* Desktop Right Section */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Desktop Balance */}
+            <div className="hidden md:block">
+              <BalanceCard balance={user.balance} />
+            </div>
+
+            {/* Actions */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <DepositCard onSuccess={handleSuccess} />
+              <WithdrawCard onSuccess={handleSuccess} />
+              <TransferCard onSuccess={handleSuccess} />
+            </div>
+          </div>
+        </div>
+
+        {/* Transactions */}
+        <TransactionsPreview transactions={transactions} />
+      </main>
     </div>
   );
 };

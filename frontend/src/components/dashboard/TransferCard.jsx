@@ -19,9 +19,9 @@ const TransferCard = ({ onSuccess }) => {
       setLoading(true);
 
       await api.post("/transactions/transfer", {
-        amount: Number(amount),
-        toAccount,
-      });
+  amount: Number(amount),
+  toAccount: toAccount.trim(),
+});
 
       setAmount("");
       setToAccount("");
@@ -49,12 +49,15 @@ const TransferCard = ({ onSuccess }) => {
         />
 
         <input
-          type="number"
-          placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+  type="number"
+  inputMode="numeric"
+  pattern="[0-9]*"
+  placeholder="Recipient Account Number"
+  value={toAccount}
+  onChange={(e) => setToAccount(e.target.value.replace(/\D/g, ""))}
+  className="w-full border rounded-lg px-4 py-2"
+/>
+
 
         <button
           disabled={loading}
